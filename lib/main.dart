@@ -2,16 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:library_system/books.dart';
 import 'package:library_system/mybooks.dart';
 import 'package:library_system/navbar.dart';
+import 'package:dio/dio.dart';
 
 int _currentIndex = 0;
 
 void main() {
+  MyBooks myBooks = MyBooks();
+
   runApp(MaterialApp(
-    home: HomePage(),
+    debugShowCheckedModeBanner: false,
+    home: HomePage(myBooks: myBooks),
   ));
 }
 
 class HomePage extends StatefulWidget {
+  late MyBooks myBooks;
+  HomePage({required this.myBooks});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -57,13 +64,31 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body: (_currentIndex == 0)
-            ? DisplayBooks()
+            ? DisplayBooks(myBooks: widget.myBooks)
             : (_currentIndex == 1)
-                ? DisplayMyBooks()
+                ? DisplayMyBooks(myBooks: widget.myBooks)
                 : Container(
                     child: const Center(
                       child: Text("Profile"),
                     ),
                   ));
+  }
+}
+
+class MyBooks {
+  List<String> bookNames = [];
+  List<String> bookUrls = [];
+  List<String> bookImages = [];
+
+  add(bookName, bookImage) async {
+    this.bookNames.add(bookName);
+    this.bookImages.add(bookImage);
+
+    var response = await Dio().post(
+        'https://lib-mana-sys.herokuapp.com/api/v1/download',
+        data: {'name': bookName});
+
+    bookUrls.add(response.data['url']);
+    print(bookUrls);
   }
 }

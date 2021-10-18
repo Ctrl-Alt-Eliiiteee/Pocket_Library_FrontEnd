@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:library_system/main.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class DisplayBooks extends StatefulWidget {
+  late MyBooks myBooks;
+  DisplayBooks({required this.myBooks});
+
   @override
   _DisplayBooksState createState() => _DisplayBooksState();
 }
 
-List<Color?> _cardColors = [
-  Colors.red[100],
-  Colors.blue[100],
-  Colors.pink[100],
-  Colors.yellow[100]
+List<String> bookNames = [
+  "The Adventures of Sherlock Holmes",
+  "The Fellowship of the Ring",
 ];
 
-List<String> _booknames = [
-  "Amara The BRAVE",
-  "Amara The BRAVE",
-  "Amara The BRAVE",
-  "Amara The BRAVE"
-];
-
-List<String> _coversList = [
-  'assets/Amara.jpg',
-  'assets/Amara.jpg',
-  'assets/Amara.jpg',
-  'assets/Amara.jpg'
+List<String> bookImages = [
+  'https://images-na.ssl-images-amazon.com/images/I/917q1pl1VIL.jpg',
+  'https://images-na.ssl-images-amazon.com/images/I/91rq1j7GYhL.jpg',
 ];
 
 class _DisplayBooksState extends State<DisplayBooks> {
@@ -68,7 +63,7 @@ class _DisplayBooksState extends State<DisplayBooks> {
                     crossAxisCount: 2,
                     mainAxisSpacing: h * 0.05,
                     crossAxisSpacing: w * 0.05),
-                itemCount: _booknames.length,
+                itemCount: bookNames.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TextButton(
                     onPressed: () {
@@ -76,8 +71,9 @@ class _DisplayBooksState extends State<DisplayBooks> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => BuyOrRent(
-                                    bookCover: _coversList[index % 4],
-                                    bookName: _booknames[index % 4],
+                                    myBooks: widget.myBooks,
+                                    bookCover: bookImages[index],
+                                    bookName: bookNames[index],
                                   )));
                     },
                     child: _bookCard(h, w, index),
@@ -95,21 +91,22 @@ class _DisplayBooksState extends State<DisplayBooks> {
     return Column(
       children: [
         Container(
-          height: h * 0.2,
+          height: h * 0.18,
           width: w * 0.35,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               image: DecorationImage(
-                  image: AssetImage(_coversList[index % 4]),
+                  image: NetworkImage(bookImages[index]),
                   fit: BoxFit.cover)),
         ),
         const SizedBox(height: 10),
         Text(
-          _booknames[index % 4],
+          bookNames[index],
           style: TextStyle(
               fontSize: w * 0.04,
               fontWeight: FontWeight.bold,
               color: Colors.black),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -117,15 +114,68 @@ class _DisplayBooksState extends State<DisplayBooks> {
 }
 
 class BuyOrRent extends StatefulWidget {
-  final String? bookName;
-  final String? bookCover;
+  late MyBooks myBooks;
+  final String ?bookName;
+  final String ?bookCover;
 
-  const BuyOrRent({Key? key, this.bookName, this.bookCover}) : super(key: key);
+  BuyOrRent({Key ?key, required this.myBooks, this.bookName, this.bookCover}) : super(key: key);
   @override
   _BuyOrRentState createState() => _BuyOrRentState();
 }
 
 class _BuyOrRentState extends State<BuyOrRent> {
+  late Razorpay _razorpay;
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void openCheckout(String type) async {
+    var options = {
+      'key': 'rzp_test_RyfDbq015IzSkf',
+      'amount': type == 'buy' ? 20000 : 5000,
+      'name': 'Library Management',
+      'description': 'Payment',
+      'prefill': {'contact': '', 'email': ''},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId.toString(), timeInSecForIosWeb: 4);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message.toString(),
+        timeInSecForIosWeb: 4);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName.toString(), timeInSecForIosWeb: 4);
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -144,7 +194,7 @@ class _BuyOrRentState extends State<BuyOrRent> {
                 decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     image: DecorationImage(
-                        image: AssetImage(widget.bookCover.toString()),
+                        image: NetworkImage(widget.bookCover.toString()),
                         fit: BoxFit.cover)),
               ),
               const SizedBox(height: 10),
@@ -185,7 +235,15 @@ class _BuyOrRentState extends State<BuyOrRent> {
                         ),
                       ],
                     )),
-                onPressed: () {},
+                onPressed: () {
+                  if(!widget.myBooks.bookNames.contains(widget.bookName)) {
+                    widget.myBooks.add(widget.bookName, widget.bookCover);
+                    openCheckout('buy');
+                  }
+                  else {
+                    Fluttertoast.showToast(msg: "Already Exists in My Books");
+                  }
+                },
               ),
               const SizedBox(height: 50),
               ElevatedButton(
@@ -219,7 +277,15 @@ class _BuyOrRentState extends State<BuyOrRent> {
                         ),
                       ],
                     )),
-                onPressed: () {},
+                onPressed: () {
+                  if(!widget.myBooks.bookNames.contains(widget.bookName)) {
+                    widget.myBooks.add(widget.bookName, widget.bookCover);
+                    openCheckout('rent');
+                  }
+                  else {
+                    Fluttertoast.showToast(msg: "Already Exists in My Books");
+                  }
+                },
               ),
             ],
           ),

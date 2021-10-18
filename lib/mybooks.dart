@@ -1,26 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'main.dart';
 
 class DisplayMyBooks extends StatefulWidget {
+  late MyBooks myBooks;
+  DisplayMyBooks({required this.myBooks});
+
   @override
   _DisplayMyBooksState createState() => _DisplayMyBooksState();
 }
-
-List<Color?> _cardColors = [
-  Colors.red[100],
-  Colors.blue[100],
-  Colors.pink[100],
-  Colors.yellow[100]
-];
-
-List<String> _myBooknames = [
-  "Amara The BRAVE",
-  "Amara The BRAVE",
-];
-
-List<String> _myIimagesList = [
-  'assets/Amara.jpg',
-  'assets/Amara.jpg',
-];
 
 class _DisplayMyBooksState extends State<DisplayMyBooks> {
   @override
@@ -57,10 +45,17 @@ class _DisplayMyBooksState extends State<DisplayMyBooks> {
                     crossAxisCount: 2,
                     mainAxisSpacing: h * 0.05,
                     crossAxisSpacing: w * 0.05),
-                itemCount: _myBooknames.length,
+                itemCount: widget.myBooks.bookNames.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookViewer(
+                                bookUrl: widget.myBooks.bookUrls[index],
+                              )));
+                    },
                     child: _bookCard(h, w, index),
                   );
                 },
@@ -76,23 +71,39 @@ class _DisplayMyBooksState extends State<DisplayMyBooks> {
     return Column(
       children: [
         Container(
-          height: h * 0.2,
+          height: h * 0.18,
           width: w * 0.35,
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               image: DecorationImage(
-                  image: AssetImage(_myIimagesList[index % 4]),
+                  image: NetworkImage(widget.myBooks.bookImages[index]),
                   fit: BoxFit.cover)),
         ),
         const SizedBox(height: 10),
         Text(
-          _myBooknames[index % 4],
+          widget.myBooks.bookNames[index],
           style: TextStyle(
               fontSize: w * 0.04,
               fontWeight: FontWeight.bold,
               color: Colors.black),
+          textAlign: TextAlign.center,
         ),
       ],
     );
   }
 }
+
+class BookViewer extends StatelessWidget {
+  late String bookUrl;
+  BookViewer({Key? key, required this.bookUrl}) : super(key: key);
+
+  @override
+  Widget build (BuildContext context) {
+    return Scaffold (
+      body: SfPdfViewer.network(
+        bookUrl,
+      ),
+    );
+  }
+}
+
