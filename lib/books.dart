@@ -11,6 +11,12 @@ class DisplayBooks extends StatefulWidget {
   _DisplayBooksState createState() => _DisplayBooksState();
 }
 
+List<Color?> tileColors = [
+  Colors.pink[100],
+  Colors.blue[100],
+  Colors.red[100],
+];
+
 List<String> bookNames = [
   "The Adventures of Sherlock Holmes",
   "The Fellowship of the Ring",
@@ -33,9 +39,6 @@ class _DisplayBooksState extends State<DisplayBooks> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: h * 0.015,
-            ),
             Center(
               child: Text(
                 "Home",
@@ -62,7 +65,7 @@ class _DisplayBooksState extends State<DisplayBooks> {
                     childAspectRatio: 3 / 4,
                     crossAxisCount: 2,
                     mainAxisSpacing: h * 0.05,
-                    crossAxisSpacing: w * 0.05),
+                    crossAxisSpacing: w * 0.0),
                 itemCount: bookNames.length,
                 itemBuilder: (BuildContext context, int index) {
                   return TextButton(
@@ -88,37 +91,59 @@ class _DisplayBooksState extends State<DisplayBooks> {
   }
 
   Widget _bookCard(double h, double w, int index) {
-    return Column(
-      children: [
-        Container(
-          height: h * 0.18,
-          width: w * 0.35,
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              image: DecorationImage(
-                  image: NetworkImage(bookImages[index]),
-                  fit: BoxFit.cover)),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          bookNames[index],
-          style: TextStyle(
-              fontSize: w * 0.04,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.only(
+        top: 10,
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: h * 0.045,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: tileColors[index % 3],
+                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+            ),
+          ),
+          Column(
+            children: [
+              Center(
+                child: Container(
+                  height: h * 0.18,
+                  width: w * 0.3,
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      image: DecorationImage(
+                          image: NetworkImage(bookImages[index]),
+                          fit: BoxFit.cover)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                bookNames[index],
+                style: TextStyle(
+                    fontSize: w * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
 class BuyOrRent extends StatefulWidget {
   late MyBooks myBooks;
-  final String ?bookName;
-  final String ?bookCover;
+  final String? bookName;
+  final String? bookCover;
 
-  BuyOrRent({Key ?key, required this.myBooks, this.bookName, this.bookCover}) : super(key: key);
+  BuyOrRent({Key? key, required this.myBooks, this.bookName, this.bookCover})
+      : super(key: key);
   @override
   _BuyOrRentState createState() => _BuyOrRentState();
 }
@@ -162,18 +187,23 @@ class _BuyOrRentState extends State<BuyOrRent> {
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(
-        msg: "SUCCESS: " + response.paymentId.toString(), timeInSecForIosWeb: 4);
+        msg: "SUCCESS: " + response.paymentId.toString(),
+        timeInSecForIosWeb: 4);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     Fluttertoast.showToast(
-        msg: "ERROR: " + response.code.toString() + " - " + response.message.toString(),
+        msg: "ERROR: " +
+            response.code.toString() +
+            " - " +
+            response.message.toString(),
         timeInSecForIosWeb: 4);
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
-        msg: "EXTERNAL_WALLET: " + response.walletName.toString(), timeInSecForIosWeb: 4);
+        msg: "EXTERNAL_WALLET: " + response.walletName.toString(),
+        timeInSecForIosWeb: 4);
   }
 
   @override
@@ -236,11 +266,10 @@ class _BuyOrRentState extends State<BuyOrRent> {
                       ],
                     )),
                 onPressed: () {
-                  if(!widget.myBooks.bookNames.contains(widget.bookName)) {
+                  if (!widget.myBooks.bookNames.contains(widget.bookName)) {
                     widget.myBooks.add(widget.bookName, widget.bookCover);
                     openCheckout('buy');
-                  }
-                  else {
+                  } else {
                     Fluttertoast.showToast(msg: "Already Exists in My Books");
                   }
                 },
@@ -278,11 +307,10 @@ class _BuyOrRentState extends State<BuyOrRent> {
                       ],
                     )),
                 onPressed: () {
-                  if(!widget.myBooks.bookNames.contains(widget.bookName)) {
+                  if (!widget.myBooks.bookNames.contains(widget.bookName)) {
                     widget.myBooks.add(widget.bookName, widget.bookCover);
                     openCheckout('rent');
-                  }
-                  else {
+                  } else {
                     Fluttertoast.showToast(msg: "Already Exists in My Books");
                   }
                 },
