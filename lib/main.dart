@@ -3,6 +3,7 @@ import 'package:library_system/books.dart';
 import 'package:library_system/mybooks.dart';
 import 'package:library_system/navbar.dart';
 import 'package:dio/dio.dart';
+import 'auth.dart';
 
 int _currentIndex = 0;
 
@@ -10,8 +11,12 @@ void main() {
   MyBooks myBooks = MyBooks();
 
   runApp(MaterialApp(
+    theme: ThemeData(
+      primarySwatch: Colors.green,
+      accentColor: Colors.green,
+    ),
     debugShowCheckedModeBanner: false,
-    home: HomePage(myBooks: myBooks),
+    home: Auth(myBooks: myBooks),
   ));
 }
 
@@ -54,24 +59,11 @@ class _HomePageState extends State<HomePage> {
               inactiveColor: Colors.black,
               textAlign: TextAlign.center,
             ),
-            BottomNavyBarItem(
-              icon: const Icon(Icons.person),
-              title: const Text('Profile'),
-              activeColor: Colors.blue,
-              inactiveColor: Colors.black,
-              textAlign: TextAlign.center,
-            ),
           ],
         ),
         body: (_currentIndex == 0)
             ? DisplayBooks(myBooks: widget.myBooks)
-            : (_currentIndex == 1)
-                ? DisplayMyBooks(myBooks: widget.myBooks)
-                : Container(
-                    child: const Center(
-                      child: Text("Profile"),
-                    ),
-                  ));
+            : DisplayMyBooks(myBooks: widget.myBooks));
   }
 }
 

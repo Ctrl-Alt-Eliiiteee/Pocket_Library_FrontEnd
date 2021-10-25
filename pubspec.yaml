@@ -37,6 +37,7 @@ dependencies:
   animated_bottom_navigation_bar: ^0.3.2
   razorpay_flutter:
   fluttertoast:
+  flutter_login:
   dio:
   syncfusion_flutter_pdfviewer:
 

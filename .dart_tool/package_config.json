@@ -8,6 +8,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "another_flushbar",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/another_flushbar-1.10.24",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "another_transformer_page_view",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/another_transformer_page_view-1.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "async",
       "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.6.1",
       "packageUri": "lib/",
@@ -92,6 +104,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "flutter_login",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_login-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/savss624/Developer/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -106,6 +124,12 @@
     {
       "name": "fluttertoast",
       "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.8",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "font_awesome_flutter",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/font_awesome_flutter-9.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -152,6 +176,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.0",
       "packageUri": "lib/",
@@ -172,6 +202,18 @@
     {
       "name": "plugin_platform_interface",
       "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.0.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "provider",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/provider-5.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "quiver",
+      "rootUri": "file:///Users/savss624/Developer/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-3.0.1+1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -284,7 +326,7 @@
       "languageVersion": "2.12"
     }
   ],
-  "generated": "2021-10-18T17:45:33.907959Z",
+  "generated": "2021-10-19T07:22:01.710138Z",
   "generator": "pub",
   "generatorVersion": "2.13.4"
 }
