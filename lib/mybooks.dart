@@ -6,7 +6,6 @@ import 'main.dart';
 class DisplayMyBooks extends StatefulWidget {
   late MyBooks myBooks;
   DisplayMyBooks({required this.myBooks});
-
   @override
   _DisplayMyBooksState createState() => _DisplayMyBooksState();
 }
